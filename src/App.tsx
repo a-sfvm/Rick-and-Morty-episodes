@@ -5,7 +5,6 @@ import Search from "./components/Search";
 
 const App: React.FC = () => (
   <ApolloProvider client={client}>
-    <h1>Rick & Morty Episodes</h1>
     <Search />
   </ApolloProvider>
 );
