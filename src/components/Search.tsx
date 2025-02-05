@@ -30,7 +30,7 @@ const Search: React.FC = () => {
 
   return (
     <div className="p-6 text-center">
-      <h2 className="text-3xl font-bold text-green-400">Search Rick & Morty Episodes by Season</h2>
+      <h2 className="text-4xl font-bold text-green-400">Search Rick & Morty Episodes by Season</h2>
       <select
         value={season}
         onChange={(event) => setSeason(event.target.value)}

@@ -22,7 +22,16 @@ interface ResultsProps {
 
 
 const Results: React.FC<ResultsProps> = ({ episodes }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [hoveredChars, setHoveredChars] = useState<{ [key: string]: string | null }>({});
+  const excludedNames = ["Rick Sanchez", "Morty Smith", "Beth Smith", "Jerry Smith", "Summer Smith"];
+
+  const handleMouseEnter = (episodeId: string, charId: string) => {
+    setHoveredChars((prev) => ({ ...prev, [episodeId]: charId }));
+  };
+
+  const handleMouseLeave = (episodeId: string) => {
+    setHoveredChars((prev) => ({ ...prev, [episodeId]: null }));
+  };
 
   return (
     <div className="mx-auto mt-6 px-4 sm:px-6 lg:px-8">
@@ -35,22 +44,31 @@ const Results: React.FC<ResultsProps> = ({ episodes }) => {
             <h3 className="text-lg font-semibold">"{episode.name}"</h3>
             <p className="text-sm text-gray-400">{episode.air_date}</p>
             <p className="text-sm text-gray-500">{episode.episode}</p>
-            <div className="mt-4 flex items-center gap-2">
-              {episode.characters.slice(4, 10).map((char: any) => (
-                <div key={char.id} className="w-14 h-14 sm:w-16 sm:h-16">
-                  <img
-                    src={char.image}
-                    alt={char.name}
-                    className="w-100 h-100 rounded-full border border-gray-600"
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
-                  />
-                  <p className={isHovered ? "text-green-300" : ""}>
-                    {isHovered ? char.name : ""}
-                  </p>
-                </div>
-              ))}
+            <div className="mt-4 mb-6 flex items-center place-content-center gap-2">
+              {episode.characters
+                .filter((char: any) => !excludedNames.includes(char.name))
+                .slice(0, 6)
+                .map((char: any) => (
+                  <div key={char.id} className="w-14 h-14 sm:w-16 sm:h-16">
+                    <img
+                      src={char.image}
+                      alt={char.name}
+                      className="w-100 h-100 rounded-full border border-gray-600"
+                      onMouseEnter={() => handleMouseEnter(episode.id, char.id)}
+                      onMouseLeave={() => handleMouseLeave(episode.id)}
+                    />
+                  </div>
+                ))}
             </div>
+            <p className="text-sm text-center mt-2">
+              {hoveredChars[episode.id] ? (
+                <span className="text-green-300">
+                  {episode.characters.find((char: any) => char.id === hoveredChars[episode.id])?.name}
+                </span>
+              ) : (
+                <span className="text-gray-500">special character</span>
+              )}
+            </p>
           </li>
         ))}
       </ul>
